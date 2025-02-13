@@ -59,7 +59,47 @@ chmod -R +x *
 </details>
 
 
+### ⚠️ Secure Boot Configuration  
+If you encounter issues with **Secure Boot**, follow these steps to properly configure the firmware:  
 
+1. **Create the Virtual Machine (VM)**  
+   - Set up a VM **without using the patched firmware**.  
+   - At the end of the configuration, choose **customize settings** and set the firmware to **UEFI**.  
+   - Ensure the selected firmware is in `.qcow2` format (not `.fd`).  
+
+2. **Boot the VM and Reset Secure Boot Keys**  
+   - Start the VM and boot into the **EDK2 firmware**.  
+   - Navigate to **Secure Boot settings** and **reset all certificates**.  
+
+3. **Manually Enroll Secure Boot Certificates**  
+   - Load an `.img` file containing all necessary certificates in **`.der` format**.  
+   - Manually enroll **all 8 certificates**.  
+
+4. **Switch to the Patched Firmware**  
+   - Power off the VM.  
+   - Edit the VM configuration and replace the firmware with the **patched version**, ensuring the existing **VARS file is retained**.  
+   - Your configuration should look like this:  
+
+     ```xml  
+     <os>  
+       <type arch="x86_64" machine="pc-q35-9.2">hvm</type>  
+       <loader readonly="yes" secure="yes" type="pflash">/usr/share/edk2/x64/OVMF_CODE.secboot.4m.fd</loader>  
+       <nvram template="/usr/share/edk2/x64/OVMF_VARS.4m.fd">/var/lib/libvirt/qemu/nvram/Windows-11_VARS.qcow2</nvram>  
+       <boot dev="hd"/>  
+       <bootmenu enable="yes"/>  
+     </os>  
+     ```  
+
+5. **Verify and Proceed**  
+   - Start the VM—Secure Boot should now function correctly.  
+
+#### ❓ Why is this necessary?  
+- Without resetting the **Secure Boot certificates**, Windows will **crash (BSOD)** either during installation or shortly after startup.  
+- Using `virt-fw-vars` to inject certificates **does not work** and results in the same issue.  
+
+This method ensures Secure Boot operates correctly without Windows-related crashes.  
+
+---
 
 
 

@@ -60,7 +60,7 @@ chmod -R +x *
 
 
 ### ⚠️ Secure Boot Configuration  
-If you encounter issues with **Secure Boot** where Windows BSODs, you can either use the provided VARS template directly, or follow these steps to properly configure the firmware:  
+If you encounter issues with **Secure Boot** where Windows BSODs, you can either use the provided VARS template directly, or follow these steps manually to configure the firmware:  
 
 1. **Create the Virtual Machine (VM)**  
    - Set up a VM **without using the patched firmware**.  
